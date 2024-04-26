@@ -4,9 +4,7 @@ FROM base as install
 
 ENV NODE_VERSION 20.12.0
 
-RUN mkdir -p /app-front/src
-
-WORKDIR /app-front
+WORKDIR /app
 
 COPY ./front/package*.json ./
 

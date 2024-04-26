@@ -1,34 +1,81 @@
 from typing import Union
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from pydantic import BaseModel
 import numpy
 import matplotlib.pyplot as plt
+import models
+from database import engine, SessionLocal
+from sqlalchemy.orm import Session
+from fastapi import File, UploadFile
 
 app = FastAPI()
 
+models.Base.metadata.create_all(bind=engine)
 
-class Item(BaseModel):
-    name: str
-    price: float
-    is_offer: Union[bool, None] = None
+def get_db():
+    try:
+        db = SessionLocal()
+        yield db
+    finally:
+        db.close()
+
+
+class Image(BaseModel):
+    id: int 
+    code: str
+
+IMAGE = []
 
 
 @app.get("/")
-def read_root():
-    return {"Hello": "World",
-            "same": "same"}
-    return {"same": "shit"}
+def read_root(db: Session = Depends(get_db)):
+    return db.query(models.Images).all()
 
+@app.post("/")
+def create_image(image: Image, db: Session = Depends(get_db)):
+    
+    image_model = models.Images()
+    image_model.id = image.id
+    image_model.code = image.code
 
-@app.get("/item/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+    db.add(image_model)
+    db.commit()
 
-@app.put("/items/{item_id}")
-def update_item(item_id: int, item:Item):
-    return {'item_name': item.name, "item_id":item_id}
+    return image
 
-from fastapi import File, UploadFile
+@app.put("/{image_id}")
+def update_book(image_id: int, image: Image, db: Session = Depends(get_db)):
+
+    image_model = db.query(models.Images).filter(models.Images.id == image_id).first()
+
+    if image_model is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"ID {image_id} : Does not exist"
+        )
+    image_model.id = image_id
+    image_model.code=image.code
+
+    db.add(image_model)
+    db.commit()
+
+    return db.query(models.Images).all()
+
+@app.delete("/{image_id}")
+def delete_image(image_id:int, db:Session = Depends(get_db)):
+    image_model = db.query(models.Images).filter(models.Images.id == image_id).first()
+
+    if image_model is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"ID {image_id} : Does not exist"
+        )
+
+    db.query(models.Images).filter(models.Images.id == image_id).delete()
+    
+    db.commit()
+
+    return db.query(models.Images).all()
 
 @app.post("/upload")
 def upload(file: UploadFile = File(...)):
