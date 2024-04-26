@@ -5,12 +5,15 @@
 Не проверял докер <br>
 
 <h1>Запуск фронта</h1>
- bun i <br>
- bun run dev
+<code>bun i </code> <br>
+ <code>bun run dev</code>
 
 <h1>Запуск бека</h1>
-pip install -r requiremets.txt <br>
-uvicorn main:app -reload
+<code>pip install -r requiremets.txt </code>
+<br>
+<code>uvicorn main:app -reload</code>
+
 
 <h1>Docker</h1>
-docker-compose up<br>
+<code>docker-compose up</code>
+<br>
