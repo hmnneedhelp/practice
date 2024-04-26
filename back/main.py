@@ -1,6 +1,8 @@
 from typing import Union
 from fastapi import FastAPI, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+import base64
+import io
 import numpy
 import matplotlib.pyplot as plt
 import models
@@ -21,8 +23,8 @@ def get_db():
 
 
 class Image(BaseModel):
-    id: int 
-    code: str
+    id: int = Field(gt=-1, lt=101)
+    code: str = Field(min_length=1)
 
 IMAGE = []
 
@@ -43,23 +45,18 @@ def create_image(image: Image, db: Session = Depends(get_db)):
 
     return image
 
-@app.put("/{image_id}")
-def update_book(image_id: int, image: Image, db: Session = Depends(get_db)):
-
+@app.get("/{image_id}")
+def find_one_img(image_id:int, db: Session = Depends(get_db)):
     image_model = db.query(models.Images).filter(models.Images.id == image_id).first()
 
+    
     if image_model is None:
         raise HTTPException(
             status_code=404,
             detail=f"ID {image_id} : Does not exist"
         )
-    image_model.id = image_id
-    image_model.code=image.code
 
-    db.add(image_model)
-    db.commit()
-
-    return db.query(models.Images).all()
+    return image_model
 
 @app.delete("/{image_id}")
 def delete_image(image_id:int, db:Session = Depends(get_db)):
@@ -77,15 +74,12 @@ def delete_image(image_id:int, db:Session = Depends(get_db)):
 
     return db.query(models.Images).all()
 
-@app.post("/upload")
-def upload(file: UploadFile = File(...)):
-    try:
-        contents = file.file.read()
-        with open(file.filename, 'wb') as f:
-            f.write(contents)
-    except Exception:
-        return {"message": "There was an error uploading the file"}
-    finally:
-        file.file.close()
-
-    return {"message": f"Successfully uploaded {file.filename}"}
+@app.post('/encodeimage')
+async def encode_image(image: UploadFile = File(...), db:Session = Depends(get_db),):
+    image_model = models.Images()
+    img = await image.read()
+    encoded_image = base64.b64encode(img).decode('utf-8')
+    image_model.code = encoded_image
+    db.add(image_model)
+    db.commit()
+    return db.query(models.Images).all()
