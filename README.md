@@ -1,5 +1,3 @@
-# practice
-
 <h1>Vite + FastAPI</h1>
 
 Не проверял докер <br>
