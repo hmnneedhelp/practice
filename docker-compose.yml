@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  fastapi:
+    build: ./fastapi
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./fastapi/images.db:/app/images.db
+
+  react:
+    build: ./react
+    ports:
+      - "3000:3000"
+    depends_on:
+      - fastapi

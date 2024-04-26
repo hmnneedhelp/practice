@@ -98,15 +98,19 @@ def delete_image(image_id:int, db:Session = Depends(get_db)):
     return db.query(models.Images).all()
 
 @app.post('/encodeimage')
-async def encode_image(image: UploadFile = File(...), db:Session = Depends(get_db),):
-    image_model = models.Images()
-    img = await image.read()
-    encoded_image = base64.b64encode(img).decode('utf-8')
-    image_model.code = encoded_image
-    db.add(image_model)
-    db.commit()
-    return db.query(models.Images).all()
-
+async def encode_image(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    try:
+        image_model = models.Images()
+        img = await file.read()
+        encoded_image = base64.b64encode(img).decode('utf-8')
+        image_model.code = encoded_image
+        db.add(image_model)
+        db.commit()
+        return {"message": "Image uploaded successfully"}
+    except Exception as e:
+        return {"error": str(e)}
+    
+    
 @app.get('/decodeimage/{image_id}')
 async def decode_image(image_id: int, db: Session = Depends(get_db)):
     image_model = db.query(models.Images).filter(models.Images.id == image_id).first()
