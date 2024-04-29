@@ -3,18 +3,22 @@
 
 
 <h1>Запуск фронта</h1>
+
 ```bash
-$ bun i 
+$ bun install
 
 $ bun run dev
 ```
 
 <h1>Запуск бека</h1>
-```bash
-$ pip install -r requiremets.txt 
 
-$ uvicorn main:app -reload
+```bash
+$ pip install -r requirements.txt
+
+$ uvicorn main:app --reload
+
 ```
+
 
 <h1>Docker</h1>
 
