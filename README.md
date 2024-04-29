@@ -3,19 +3,19 @@
 
 
 <h1>Запуск фронта</h1>
-```node
+```bash
 bun i 
 
 bun run dev```
 
 <h1>Запуск бека</h1>
-```python
+```bash
 pip install -r requiremets.txt 
 
 uvicorn main:app -reload```
 
 <h1>Docker</h1>
-```yml
+```bash
 docker compose build
 
 docker compose up```
