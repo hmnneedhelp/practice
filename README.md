@@ -3,16 +3,22 @@
 
 
 <h1>Запуск фронта</h1>
-```bun i ```
- ```bun run dev```
+```node
+bun i 
+
+bun run dev```
 
 <h1>Запуск бека</h1>
-```pip install -r requiremets.txt ```
-```uvicorn main:app -reload```
+```python
+pip install -r requiremets.txt 
+
+uvicorn main:app -reload```
 
 <h1>Docker</h1>
-```docker compose build```
-```docker compose up```
+```yml
+docker compose build
+
+docker compose up```
 
 <h1>Порты</h1>
 ```localhost:5173```
