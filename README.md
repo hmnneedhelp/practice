@@ -4,22 +4,34 @@
 
 <h1>Запуск фронта</h1>
 ```bash
-bun i 
+$ bun i 
 
-bun run dev```
+$ bun run dev
+```
 
 <h1>Запуск бека</h1>
 ```bash
-pip install -r requiremets.txt 
+$ pip install -r requiremets.txt 
 
-uvicorn main:app -reload```
+$ uvicorn main:app -reload
+```
 
 <h1>Docker</h1>
-```bash
-docker compose build
 
-docker compose up```
+```bash
+
+$ docker compose build
+
+$ docker compose up
+```
 
 <h1>Порты</h1>
-```localhost:5173```
-```localhost:8000```
+
+```bash
+
+$ http://localhost:5173 #front
+
+$ http://localhost:8000 #back
+
+```
+
