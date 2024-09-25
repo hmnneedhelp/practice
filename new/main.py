@@ -26,7 +26,7 @@ def csv_to_database(csv_file_path, db_connection_string, table_name):
     df.to_sql(table_name, con=engine, if_exists='append', index=False)
 
 if __name__ == "__main__":
-    image_path = "sample_image.png"
+    image_path = "image1.png"
     
     pixel_data = process_image(image_path)
     
